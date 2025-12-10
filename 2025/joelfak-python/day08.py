@@ -13,8 +13,10 @@ class Circuit:
         return f"[{len(self.junction_boxes)} junction boxes, {len(self.connections)} connections]"
 
 @hf.timing
-def part1(data, num_connections):
-    # print()
+def part1(data, num_connections = None):
+    if not num_connections:
+        num_connections = (len(data) ** 2 - len(data)) // 2
+
     input = np.array([[int(v) for v in r.split(',')] for r in data])
     distances = np.sqrt(np.sum(np.array([np.square(np.subtract.outer(input[:,n],input[:,n])) for n in range(3)]),0))
     distances_flattened = distances.ravel()
@@ -66,13 +68,18 @@ def part1(data, num_connections):
         if not junction_box_found:
             circuits.append(Circuit([junction_box_a, junction_box_b], (junction_box_a, junction_box_b)))
 
+        if len(circuits) == 1 and len(circuits[0].junction_boxes) == len(data):
+            print("All nodes connected")
+
+            return junction_box_a[0] * junction_box_b[0]
+
     three_largest_size_graph_sizes = np.array([len(c.junction_boxes) for c  in sorted(circuits, key=lambda c: len(c.junction_boxes), reverse=True)[:3]])
 
     return np.product(three_largest_size_graph_sizes)
 
 @hf.timing
 def part2(data):
-    return 0
+    return part1(data)
 
 ## Unit tests ########################################################
 
@@ -106,6 +113,9 @@ def test_help_function(test_input, expected):
 
 def test_part1(input):
     assert part1(input, 10) == 40 
+
+def test_part2(input):
+    assert part2(input) == 25272
 
 ## Main ########################################################
 

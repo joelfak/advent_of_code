@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import helpfunctions as hf
-import sys, pytest
+import sys, pytest, logging
+
+logger = logging.getLogger(__name__)
 
 @hf.timing
 def part1(data):
